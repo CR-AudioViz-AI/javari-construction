@@ -1,69 +1,79 @@
-'use client';
-import { motion } from 'framer-motion';
-import { HardHat, ArrowRight, Check, BarChart3, Users, Zap, Shield, Clock, Globe } from 'lucide-react';
+"use client";
+// app/page.tsx — Javari Construction
+// CR AudioViz AI · EIN 39-3646201 · May 2026
+import { useState } from "react";
 
-const features = [
-  { icon: BarChart3, title: 'Smart Analytics', desc: 'AI-powered insights and reporting' },
-  { icon: Users, title: 'Team Management', desc: 'Collaborate efficiently across teams' },
-  { icon: Zap, title: 'Automation', desc: 'Automate repetitive workflows' },
-  { icon: Shield, title: 'Compliance', desc: 'Built-in regulatory compliance' },
-  { icon: Clock, title: 'Real-time Updates', desc: 'Live tracking and monitoring' },
-  { icon: Globe, title: 'Integration', desc: 'Connect with existing tools' },
-];
+const TOOLS = [{"icon": "\ud83d\udccb", "label": "Proposal Writer", "desc": "Professional bid proposals", "href": "/proposal"}, {"icon": "\ud83d\udcdd", "label": "Scope of Work", "desc": "Detailed SOW documents", "href": "/sow"}, {"icon": "\u26d1\ufe0f", "label": "Safety Plan", "desc": "OSHA-compliant safety plans", "href": "/safety"}, {"icon": "\ud83d\udcc5", "label": "Project Schedule", "desc": "Timeline and milestone planning", "href": "/schedule"}, {"icon": "\ud83d\udce7", "label": "Client Updates", "desc": "Project update communications", "href": "/updates"}, {"icon": "\ud83d\udd0d", "label": "Inspection Report", "desc": "Site inspection documentation", "href": "/inspection"}];
 
-export default function Page() {
+export default function HomePage() {
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function generate() {
+    if (!input.trim()) return;
+    setLoading(true); setOutput("");
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: input }],
+          stream: false,
+          systemOverride: "You are an expert construction project manager and contractor with 20+ years experience. Write professional construction documents.",
+        }),
+      });
+      const data = await res.json();
+      setOutput(data?.choices?.[0]?.message?.content || data?.content || "Error.");
+    } catch { setOutput("Connection error."); }
+    setLoading(false);
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <HardHat className="w-8 h-8 text-orange-600" />
-            <span className="text-xl font-bold">Javari Construction</span>
-          </div>
-          <a href="/signup" className="bg-orange-600 text-white px-4 py-2 rounded-lg">Get Started</a>
+    <div style={{ minHeight:"100vh", background:"#040912", color:"#e2e8f0", fontFamily:"system-ui" }}>
+      <nav style={{ background:"#1E3A5F", padding:"0 20px", height:52, display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+          <span style={{ fontSize:20 }}>🏗️</span>
+          <span style={{ fontWeight:800, color:"#FF0800", fontSize:15 }}>Javari Construction</span>
         </div>
+        <a href="https://craudiovizai.com/auth/signup" style={{ background:"#FF0800", color:"#fff", borderRadius:7, padding:"5px 14px", fontSize:12, fontWeight:700, textDecoration:"none" }}>Sign Up Free</a>
       </nav>
-      
-      <section className="pt-32 pb-20 px-4 text-center">
-        <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}}>
-          <span className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-sm mb-6">
-            <Zap className="w-4 h-4" /> AI-Powered Platform
-          </span>
-          <h1 className="text-5xl font-bold text-slate-900 mb-6">Build Smarter. Deliver Faster.</h1>
-          <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-            Streamline operations, reduce costs, and scale your business with intelligent automation.
-          </p>
-          <a href="/signup" className="inline-flex items-center gap-2 bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold">
-            Start Free Trial <ArrowRight className="w-5 h-5" />
-          </a>
-        </motion.div>
+      <section style={{ background:"linear-gradient(135deg,#1E3A5F,#040912)", padding:"56px 24px 48px", textAlign:"center" }}>
+        <div style={{ maxWidth:640, margin:"0 auto" }}>
+          <h1 style={{ fontSize:"clamp(24px,4vw,44px)", fontWeight:900, color:"#fff", margin:"0 0 12px", lineHeight:1.05 }}>AI Tools for<br /><span style={{ color:"#FF0800" }}>Construction Pros</span></h1>
+          <p style={{ color:"rgba(255,255,255,0.7)", fontSize:15, lineHeight:1.65, margin:0 }}>Project proposals, SOW documents, safety plans, and client communications for contractors.</p>
+        </div>
       </section>
-      
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-          {features.map((f,i) => (
-            <motion.div key={f.title} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} transition={{delay:i*0.1}} className="bg-white p-6 rounded-xl border hover:shadow-lg">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                <f.icon className="w-6 h-6 text-orange-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{f.title}</h3>
-              <p className="text-slate-600">{f.desc}</p>
-            </motion.div>
+      <section style={{ maxWidth:720, margin:"0 auto", padding:"28px 20px 0" }}>
+        <div style={{ background:"#0F1F32", border:"1px solid rgba(0,180,216,0.12)", borderRadius:14, padding:"20px 24px" }}>
+          <h2 style={{ margin:"0 0 12px", fontSize:15, fontWeight:700, color:"#fff" }}>Write Project Proposal</h2>
+          <div style={{ display:"flex", gap:8 }}>
+            <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&generate()}
+              placeholder="Kitchen remodel, $45K budget, 6-week timeline, 1200 sq ft..."
+              style={{ flex:1, background:"#172D48", border:"1px solid rgba(0,180,216,0.15)", borderRadius:8, padding:"10px 12px", color:"#e2e8f0", fontSize:13, outline:"none", fontFamily:"system-ui" }} />
+            <button onClick={generate} disabled={loading||!input.trim()}
+              style={{ background:loading||!input.trim()?"#0F1F32":"#1E3A5F", color:loading||!input.trim()?"#374151":"#FF0800", border:"1px solid rgba(0,180,216,0.2)", borderRadius:8, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:loading||!input.trim()?"not-allowed":"pointer", fontFamily:"system-ui" }}>
+              {loading?"...":"Go"}
+            </button>
+          </div>
+          {output && <div style={{ marginTop:14, padding:"12px 14px", background:"rgba(0,180,216,0.05)", border:"1px solid rgba(0,180,216,0.1)", borderRadius:8 }}>
+            <pre style={{ margin:0, fontSize:13, color:"#e2e8f0", lineHeight:1.65, whiteSpace:"pre-wrap", fontFamily:"system-ui", maxHeight:320, overflowY:"auto" }}>{output}</pre>
+          </div>}
+        </div>
+      </section>
+      <section style={{ maxWidth:960, margin:"0 auto", padding:"36px 20px 72px" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:12 }}>
+          {TOOLS.map((t:any) => (
+            <a key={t.href} href={t.href} style={{ background:"#0F1F32", border:"1px solid rgba(0,180,216,0.08)", borderRadius:14, padding:"18px 16px", textDecoration:"none", display:"block" }}>
+              <span style={{ fontSize:26, display:"block", marginBottom:8 }}>{t.icon}</span>
+              <div style={{ fontWeight:700, fontSize:13, color:"#e2e8f0", marginBottom:4 }}>{t.label}</div>
+              <div style={{ fontSize:11, color:"#6B7280", lineHeight:1.4 }}>{t.desc}</div>
+            </a>
           ))}
         </div>
       </section>
-      
-      <section className="py-20 px-4 bg-orange-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">Ready to Transform Your Business?</h2>
-          <a href="/signup" className="inline-flex items-center gap-2 bg-white text-orange-600 px-8 py-4 rounded-lg font-semibold">
-            Get Started Free <ArrowRight className="w-5 h-5" />
-          </a>
-        </div>
-      </section>
-      
-      <footer className="py-12 px-4 bg-slate-900 text-center">
-        <p className="text-slate-500">© 2025 CR AudioViz AI, LLC. All rights reserved.</p>
+      <footer style={{ borderTop:"1px solid rgba(0,180,216,0.08)", padding:"12px 24px", textAlign:"center" }}>
+        <p style={{ color:"#374151", fontSize:11, margin:0 }}>© 2026 CR AudioViz AI, LLC — EIN: 39-3646201 · <a href="https://craudiovizai.com/auth/signup" style={{ color:"#FF0800", textDecoration:"none", fontWeight:600 }}>Sign Up Free</a></p>
       </footer>
     </div>
   );
