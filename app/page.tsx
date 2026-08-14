@@ -64,11 +64,11 @@ export default function HomePage() {
       <section style={{ maxWidth:960, margin:"0 auto", padding:"36px 20px 72px" }}>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:12 }}>
           {TOOLS.map((t:any) => (
-            <a key={t.href} href={t.href} style={{ background:"#0F1F32", border:"1px solid rgba(0,180,216,0.08)", borderRadius:14, padding:"18px 16px", textDecoration:"none", display:"block" }}>
+            <div key={t.href} style={{ background:"#0F1F32", border:"1px solid rgba(0,180,216,0.08)", borderRadius:14, padding:"18px 16px", textDecoration:"none", display:"block" }}>
               <span style={{ fontSize:26, display:"block", marginBottom:8 }}>{t.icon}</span>
               <div style={{ fontWeight:700, fontSize:13, color:"#e2e8f0", marginBottom:4 }}>{t.label}</div>
               <div style={{ fontSize:11, color:"#6B7280", lineHeight:1.4 }}>{t.desc}</div>
-            </a>
+            </div>
           ))}
         </div>
       </section>
